@@ -3,21 +3,18 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import argparse
-import os
 import sys
 import time
 import click
+from functools import partial
 
 from redis.exceptions import ConnectionError
-from rq import get_failed_queue, Queue, Worker
-from rq.scripts import (add_standard_arguments, read_config_file,
-                        setup_default_arguments, setup_redis)
-from rq.utils import gettermsize, make_colorizer
+from rq import Queue, Worker
 
-red = make_colorizer('darkred')
-green = make_colorizer('darkgreen')
-yellow = make_colorizer('darkyellow')
+
+red = partial(click.style, fg='red') 
+green = partial(click.style, fg='green')
+yellow = partial(click.style, fg='yellow')
 
 
 def pad(s, pad_to_length):
@@ -52,7 +49,7 @@ def show_queues(queues, raw, by_queue):
         qs = Queue.all()
 
     num_jobs = 0
-    termwidth, _ = gettermsize()
+    termwidth, _ = click.get_terminal_size()
     chartwidth = min(20, termwidth - 20)
 
     max_count = 0
@@ -71,13 +68,13 @@ def show_queues(queues, raw, by_queue):
             line = '%-12s %s %d' % (q.name, chart, count)
         else:
             line = 'queue %s %d' % (q.name, count)
-        print(line)
+        click.echo(line)
 
         num_jobs += count
 
-    # Print summary when not in raw mode
+    # click.echo summary when not in raw mode
     if not raw:
-        print('%d queues, %d jobs total' % (len(qs), num_jobs))
+        click.echo('%d queues, %d jobs total' % (len(qs), num_jobs))
 
 
 def show_workers(queues, raw, by_queue):
@@ -104,9 +101,9 @@ def show_workers(queues, raw, by_queue):
         for w in ws:
             worker_queues = filter_queues(w.queue_names())
             if not raw:
-                print('%s %s: %s' % (w.name, state_symbol(w.get_state()), ', '.join(worker_queues)))
+                click.echo('%s %s: %s' % (w.name, state_symbol(w.get_state()), ', '.join(worker_queues)))
             else:
-                print('worker %s %s %s' % (w.name, w.get_state(), ','.join(worker_queues)))
+                click.echo('worker %s %s %s' % (w.name, w.get_state(), ','.join(worker_queues)))
     else:
         # Create reverse lookup table
         queues = dict([(q, []) for q in qs])
@@ -122,29 +119,29 @@ def show_workers(queues, raw, by_queue):
                 queues_str = ", ".join(sorted(map(lambda w: '%s (%s)' % (w.name, state_symbol(w.get_state())), queues[q])))  # noqa
             else:
                 queues_str = '–'
-            print('%s %s' % (pad(q.name + ':', max_qname + 1), queues_str))
+            click.echo('%s %s' % (pad(q.name + ':', max_qname + 1), queues_str))
 
     if not raw:
-        print('%d workers, %d queues' % (len(ws), len(qs)))
+        click.echo('%d workers, %d queues' % (len(ws), len(qs)))
 
 
 def show_both(queues, raw, by_queue):
     show_queues(queues, raw, by_queue)
     if not raw:
-        print('')
+        click.echo('')
     show_workers(queues, raw, by_queue)
     if not raw:
-        print('')
+        click.echo('')
         import datetime
-        print('Updated: %s' % datetime.datetime.now())
+        click.echo('Updated: %s' % datetime.datetime.now())
 
 
 def refresh(val, func, *args):
     while True:
-        if val and sys.stdout.isatty():
-            os.system('clear')
+        if val:
+            click.clear()
         func(*args)
-        if val and sys.stdout.isatty():
+        if val:
             time.sleep(val)
         else:
             break
@@ -174,8 +171,8 @@ def info(path, interval, raw, only_queues, only_workers, by_queue, queues):
 
         refresh(interval, func, queues, raw, by_queue)
     except ConnectionError as e:
-        print(e)
+        click.echo(e)
         sys.exit(1)
     except KeyboardInterrupt:
-        print()
+        click.echo()
         sys.exit(0)
