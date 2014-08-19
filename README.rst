@@ -3,8 +3,8 @@ rq-cli
 
 A RQ CLI tool with ``empty``, ``requeue`` and ``info`` commands.
 
-.. image:: https://pypip.in/download/pyfuncrun/badge.svg
-    :target: https://pypi.python.org/pypi/pyfuncrun/
+.. image:: https://pypip.in/download/rq-cli/badge.svg
+    :target: https://pypi.python.org/pypi/rq-cli/
     :alt: Downloads
 
 Install
