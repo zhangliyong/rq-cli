@@ -72,7 +72,7 @@ def show_queues(queues, raw, by_queue):
 
         num_jobs += count
 
-    # click.echo summary when not in raw mode
+    # print summary when not in raw mode
     if not raw:
         click.echo('%d queues, %d jobs total' % (len(qs), num_jobs))
 
@@ -150,10 +150,10 @@ def refresh(val, func, *args):
 @click.command()
 @click.option('--path', '-P', default='.', help='Specify the import path.')
 @click.option('--interval', '-i', default=2.5, help='Updates stats every N seconds (default: don\'t poll)')  # noqa
-@click.option('--raw', '-r', default=False, help='Print only the raw numbers, no bar charts')  # noqa
-@click.option('--only-queues', '-Q', default=False, help='Show only queue info')  # noqa
-@click.option('--only-workers', '-W', default=False, help='Show only worker info')  # noqa
-@click.option('--by-queue', '-R', default=False, help='Shows workers by queue')  # noqa
+@click.option('--raw', '-r', is_flag=True, help='Print only the raw numbers, no bar charts')  # noqa
+@click.option('--only-queues', '-Q', is_flag=True, help='Show only queue info')  # noqa
+@click.option('--only-workers', '-W', is_flag=True, help='Show only worker info')  # noqa
+@click.option('--by-queue', '-R', is_flag=True, help='Shows workers by queue')  # noqa
 @click.argument('queues', nargs=-1)
 def info(path, interval, raw, only_queues, only_workers, by_queue, queues):
     """RQ command-line monitor."""
