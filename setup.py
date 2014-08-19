@@ -13,7 +13,7 @@ setup(
     license='BSD',
     author='Lyon Zhang',
     author_email='lyzhang87@gmail.com',
-    description='A RQ CLI',
+    description='A RQ CLI tool',
     long_description=open('README.rst').read(),
     install_requires=open('requirements.txt').read(),
 )

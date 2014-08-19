@@ -1,6 +1,12 @@
 rq-cli
 ======
 
+A RQ CLI tool with ``empty``, ``requeue`` and ``info`` commands.
+
+.. image:: https://pypip.in/download/pyfuncrun/badge.svg
+    :target: https://pypi.python.org/pypi/pyfuncrun/
+    :alt: Downloads
+
 Install
 -------
 .. code-block:: bash
@@ -12,10 +18,13 @@ Usage
 .. code-block:: bash
 
     $ rq --help
+    Usage: rq [OPTIONS] COMMAND [ARGS]...
 
-Plan
-----
+    Options:
+      -u, --url TEXT  URL describing Redis connection details.
+      --help          Show this message and exit.
 
-Implement ``empty`` and ``requeue`` first, then add ``info`` and ``enqueue``
-
-Use `click <http://click.pocoo.org>`_ to implement.
+    Commands:
+      empty    [QUEUES]: queues to empty, default: failed...
+      info     RQ command-line monitor.
+      requeue  Requeue all failed jobs in failed queue
