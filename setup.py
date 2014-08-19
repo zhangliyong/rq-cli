@@ -6,7 +6,7 @@ setup(
     py_modules=['rq_cli', 'rqinfo'],
     entry_points={
         'console_scripts': [
-            'rq=rq_cli:rq',
+            'rq=rq_cli:main',
             ]
         },
     url='https://github.com/zhangliyong/rq-cli',
